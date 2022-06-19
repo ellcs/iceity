@@ -1,10 +1,9 @@
-use iceity::progress::ProgressDialog;
-use iceity::messages::Message;
 use iceity::args::Args;
+use iceity::messages::Message;
+use iceity::progress::ProgressDialog;
 
 use clap::Parser;
-//pub mod progress;
-use iced::{Element, Sandbox, Settings};
+use iced::{Element, executor, Command, Application, Subscription, Settings};
 
 
 pub struct IceityApplication {
@@ -16,22 +15,24 @@ pub enum ChosenWindow {
     Progress(ProgressDialog)
 }
 
-impl Sandbox for IceityApplication {
+impl Application for IceityApplication {
+    type Executor = executor::Default;
     type Message = Message;
+    type Flags = ();
 
-    fn new() -> Self {
+    fn new(_flags: ()) -> (Self, Command<Message>) {
 	    let args = Args::parse();
-        Self {
+        (Self {
             arguments: args,
             state: ChosenWindow::Progress(ProgressDialog::default())
-        }
+        }, Command::none())
     }
 
     fn title(&self) -> String {
         String::from("A simple Progressbar")
     }
 
-    fn update(&mut self, message: Message) {
+    fn update(&mut self, message: Message) -> Command<Message> {
         match &mut self.state {
             ChosenWindow::Progress(dialog) => {
                 match message {
@@ -39,6 +40,15 @@ impl Sandbox for IceityApplication {
                 }
             }
                 
+        }
+        Command::none()
+    }
+
+    fn subscription(&self) -> Subscription<Message> {
+        match &self.state {
+            ChosenWindow::Progress(dialog) => {
+				dialog.subscription()
+            }
         }
     }
 
