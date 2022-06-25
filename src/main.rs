@@ -21,7 +21,7 @@ impl Application for IceityApplication {
     type Flags = ();
 
     fn new(_flags: ()) -> (Self, Command<Message>) {
-	    let args = Args::parse();
+        let args = Args::parse();
         (Self {
             arguments: args,
             state: ChosenWindow::Progress(ProgressDialog::default())
@@ -47,7 +47,7 @@ impl Application for IceityApplication {
     fn subscription(&self) -> Subscription<Message> {
         match &self.state {
             ChosenWindow::Progress(dialog) => {
-				dialog.subscription()
+                dialog.subscription()
             }
         }
     }

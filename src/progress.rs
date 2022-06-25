@@ -20,9 +20,9 @@ pub enum ProgressMessage {
 }
 
 enum StdinReaderState {
-	Start,
-	Reading(BufReader<tokio::io::Stdin>),
-	Done
+    Start,
+    Reading(BufReader<tokio::io::Stdin>),
+    Done
 }
 
 
@@ -34,21 +34,21 @@ impl ProgressDialog {
             },
 
             ProgressMessage::Confirm => {
-				std::process::exit(0);
+                std::process::exit(0);
             },
 
             ProgressMessage::Abort => {
-				//std::process::exit(1);
+                //std::process::exit(1);
             }
         }
     }
 
     pub fn view(&mut self) -> Element<Message> {
-		let ok = if self.value == 100_f32 {
-			Button::new(&mut self.ok, Text::new("Ok")).on_press(Message::Progress(ProgressMessage::Confirm))
-		} else {
-			Button::new(&mut self.ok, Text::new("Ok"))
-		};
+        let ok = if self.value == 100_f32 {
+            Button::new(&mut self.ok, Text::new("Ok")).on_press(Message::Progress(ProgressMessage::Confirm))
+        } else {
+            Button::new(&mut self.ok, Text::new("Ok"))
+        };
         Column::new()
             .padding(20)
             .push(
@@ -65,7 +65,7 @@ impl ProgressDialog {
                     .spacing(20)
                     .push({ 
                         let abort = Button::new(&mut self.abort, Text::new("Abort"));
-						abort.on_press(Message::Progress(ProgressMessage::Abort))
+                        abort.on_press(Message::Progress(ProgressMessage::Abort))
                     })
                     .push(ok)
             )
@@ -74,53 +74,53 @@ impl ProgressDialog {
 
     pub fn subscription(&self) -> iced::Subscription<Message> {
         struct WorkerId;
-		let actor = |state| async move {
-			match state {
-				StdinReaderState::Start => {
-        			let reader = BufReader::new(tokio::io::stdin());
-					//let buffer = Vec::new();
-					(Some(ProgressMessage::SetProgress(0_f32)), StdinReaderState::Reading(reader)) 
-				},
-				StdinReaderState::Reading(mut reader) => {
-					let mut buffer = Vec::new();
+        let actor = |state| async move {
+            match state {
+                StdinReaderState::Start => {
+                    let reader = BufReader::new(tokio::io::stdin());
+                    //let buffer = Vec::new();
+                    (Some(ProgressMessage::SetProgress(0_f32)), StdinReaderState::Reading(reader)) 
+                },
+                StdinReaderState::Reading(mut reader) => {
+                    let mut buffer = Vec::new();
                     println!("here");
-					let res = reader.read_until(b'\n', &mut buffer).await;
+                    let res = reader.read_until(b'\n', &mut buffer).await;
                     println!("there");
-					match res {
-						Ok(0) => {
-							// eof
-							unimplemented!();
-						},
-						Ok(_n) => {
-							let n = Self::parse_progress_number(&buffer);
-							println!("read number: {}", n);
-							(Some(ProgressMessage::SetProgress(n as f32)), StdinReaderState::Reading(reader)) 
-						}
-						_ => unimplemented!()
-					}
-				},
-				StdinReaderState::Done => unimplemented!()
+                    match res {
+                        Ok(0) => {
+                            // eof
+                            unimplemented!();
+                        },
+                        Ok(_n) => {
+                            let n = Self::parse_progress_number(&buffer);
+                            println!("read number: {}", n);
+                            (Some(ProgressMessage::SetProgress(n as f32)), StdinReaderState::Reading(reader)) 
+                        }
+                        _ => unimplemented!()
+                    }
+                },
+                StdinReaderState::Done => unimplemented!()
 
-			}
-		};
+            }
+        };
         subscription::unfold(std::any::TypeId::of::<WorkerId>(), 
-							 StdinReaderState::Start,
-							 actor).map(Message::Progress)
+                             StdinReaderState::Start,
+                             actor).map(Message::Progress)
     }
 
-	fn parse_progress_number(buffer : &Vec<u8>) -> f32 {
-		println!("buffer content: {:?}", buffer);
-		let s = str::from_utf8(&buffer).map(|p| p.strip_suffix('\n').unwrap() ).unwrap_or("");
-		println!("buffer s: {:?}", s);
-		s.parse::<f32>().unwrap_or(0_f32)
-	}
+    fn parse_progress_number(buffer : &Vec<u8>) -> f32 {
+        println!("buffer content: {:?}", buffer);
+        let s = str::from_utf8(&buffer).map(|p| p.strip_suffix('\n').unwrap() ).unwrap_or("");
+        println!("buffer s: {:?}", s);
+        s.parse::<f32>().unwrap_or(0_f32)
+    }
 }
 
 #[test]
 fn test_parse_progress_number() {
-	assert_eq!(100_f32, ProgressDialog::parse_progress_number(&Vec::from("100\n")));
-	assert_eq!(25_f32, ProgressDialog::parse_progress_number(&Vec::from("25\n")));
-	assert_eq!(0_f32, ProgressDialog::parse_progress_number(&Vec::from("0\n")));
-	assert_eq!(0_f32, ProgressDialog::parse_progress_number(&Vec::from("a\n")));
+    assert_eq!(100_f32, ProgressDialog::parse_progress_number(&Vec::from("100\n")));
+    assert_eq!(25_f32, ProgressDialog::parse_progress_number(&Vec::from("25\n")));
+    assert_eq!(0_f32, ProgressDialog::parse_progress_number(&Vec::from("0\n")));
+    assert_eq!(0_f32, ProgressDialog::parse_progress_number(&Vec::from("a\n")));
 }
 
