@@ -119,6 +119,8 @@ impl ProgressDialog {
 #[test]
 fn test_parse_progress_number() {
     assert_eq!(100_f32, ProgressDialog::parse_progress_number(&Vec::from("100\n")));
+    assert_eq!(30.0, ProgressDialog::parse_progress_number(&Vec::from("30.0\n")));
+    assert_eq!(30.5, ProgressDialog::parse_progress_number(&Vec::from("30.5\n")));
     assert_eq!(25_f32, ProgressDialog::parse_progress_number(&Vec::from("25\n")));
     assert_eq!(0_f32, ProgressDialog::parse_progress_number(&Vec::from("0\n")));
     assert_eq!(0_f32, ProgressDialog::parse_progress_number(&Vec::from("a\n")));
