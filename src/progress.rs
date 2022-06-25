@@ -5,6 +5,17 @@ use tokio::io::{BufReader, AsyncBufReadExt};
 use std::str;
 use iced::{Row, Alignment, Column, Element, ProgressBar, Text, Button, button};
 
+pub struct ProgressArgs {
+  // --text=TEXT                                       Set the dialog text
+  // --percentage=PERCENTAGE                           Set initial percentage
+  // --pulsate                                         Pulsate progress bar
+  // --auto-close                                      Dismiss the dialog when 100% has been reached
+  // --auto-kill                                       Kill parent process if Cancel button is pressed
+  // --no-cancel                                       Hide Cancel button
+  // --time-remaining                                  Estimate when progress will reach 100%k
+    
+}
+
 #[derive(Default)]
 pub struct ProgressDialog {
     pub value: f32,
