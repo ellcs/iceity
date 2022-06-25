@@ -38,7 +38,7 @@ impl ProgressDialog {
             },
 
             ProgressMessage::Abort => {
-                //std::process::exit(1);
+                std::process::exit(1);
             }
         }
     }
