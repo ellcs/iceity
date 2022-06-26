@@ -7,7 +7,7 @@ use iced::{Element, executor, Command, Application, Subscription, Settings};
 
 
 pub struct IceityApplication {
-    arguments: Args,
+    //arguments: Args,
     state: ChosenWindow
 }
 
@@ -23,8 +23,8 @@ impl Application for IceityApplication {
     fn new(_flags: ()) -> (Self, Command<Message>) {
         let args = Args::parse();
         (Self {
-            arguments: args,
-            state: ChosenWindow::Progress(ProgressDialog::default())
+            //arguments: args,
+            state: ChosenWindow::Progress(ProgressDialog::new(args))
         }, Command::none())
     }
 

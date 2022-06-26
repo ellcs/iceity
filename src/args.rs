@@ -1,4 +1,5 @@
 use clap::Parser;
+use crate::progress::ProgressArgs;
 
 #[derive(Parser, Debug)]
 pub struct Helps {
@@ -100,5 +101,8 @@ pub struct Args {
     pub helps: Helps,
 
     #[clap(flatten)]
-    pub chosen_window: ChosenWindow
+    pub chosen_window: ChosenWindow,
+
+    #[clap(flatten)]
+    pub progress_args: ProgressArgs
 }
