@@ -103,6 +103,6 @@ pub struct Args {
     #[clap(flatten)]
     pub chosen_window: ChosenWindow,
 
-    #[clap(flatten)]
-    pub progress_args: ProgressArgs
+    //#[clap(flatten)]
+    //pub progress_args: ProgressArgs
 }

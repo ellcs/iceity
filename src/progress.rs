@@ -70,7 +70,8 @@ impl ProgressDialog {
 
     pub fn new(args: crate::args::Args) -> ProgressDialog {
         ProgressDialog {
-            value: args.progress_args.percentage.unwrap_or(0_f32),
+            //value: args.progress_args.percentage.unwrap_or(0_f32),
+            value: 0_f32, //args.progress_args.percentage.unwrap_or(0_f32),
             ..Default::default()
         }
     }
@@ -97,6 +98,9 @@ impl ProgressDialog {
             Button::new(&mut self.ok, Text::new("Ok"))
         };
         Column::new()
+            .push(
+                Text::new(format!("{}", self.value))
+            )
             .padding(20)
             .push(
                 Row::new()

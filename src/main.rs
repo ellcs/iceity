@@ -1,8 +1,8 @@
 use iceity::args::Args;
 use iceity::messages::Message;
-use iceity::progress::ProgressDialog;
+use iceity::progress::{ProgressDialog, ProgressArgs};
 
-use clap::Parser;
+use clap::{Parser, CommandFactory};
 use iced::{Element, executor, Command, Application, Subscription, Settings};
 
 
@@ -60,5 +60,12 @@ impl Application for IceityApplication {
 }
 
 fn main() -> iced::Result {
-    IceityApplication::run(Settings::default())
+    let args = Args::parse();
+    if args.helps.help_progress {
+        let mut pargs = ProgressArgs::command();
+        pargs.print_help();
+        panic!();
+    }
+    //IceityApplication::run(Settings::default())
+    Ok(())
 }
