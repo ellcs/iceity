@@ -9,40 +9,41 @@ use clap::Parser;
 
 
 #[derive(Parser, Debug)]
+#[clap(override_usage("iceity --progress [OPTIONS]"))]
 pub struct ProgressArgs {
     /// Set the dialog text.
     /// Not implemented
     #[clap(long)]
-    text: Option<String>,
+    pub text: Option<String>,
 
     /// Set initial percentage
     #[clap(long)]
-    percentage: Option<f32>,                           
+    pub percentage: Option<f32>,                           
 
     /// Pulsate progress bar
     /// Not implemented
     #[clap(long)]
-    pulsate: bool,
+    pub pulsate: bool,
 
     /// Dismiss the dialog when 100% has been reached
     /// Not implemented
     #[clap(long)]
-    auto_close: bool,
+    pub auto_close: bool,
 
     /// Kill parent process if Cancel button is pressed
     /// Not implemented
     #[clap(long)]
-    auto_kill: bool,
+    pub auto_kill: bool,
 
     /// Hide Cancel button
     /// Not implemented
     #[clap(long)]
-    no_cancel: bool,
+    pub no_cancel: bool,
 
     /// Estimate when progress will reach 100%
     /// Not implemented
     #[clap(long)]
-    time_remaining: bool
+    pub time_remaining: bool
 }
 
 #[derive(Default)]
