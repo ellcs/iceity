@@ -3,44 +3,44 @@ use crate::progress::ProgressArgs;
 
 #[derive(Parser, Debug)]
 pub struct Helps {
-    #[clap(long)]
-    help_all: bool,
-    #[clap(long)]
-    help_general: bool,
-    #[clap(long)]
-    help_calendar: bool,
-    #[clap(long)]
-    help_entry: bool,
-    #[clap(long)]
-    help_error: bool,
-    #[clap(long)]
-    help_info: bool,
-    #[clap(long)]
-    help_file_selection: bool,
-    #[clap(long)]
-    help_list: bool,
-    #[clap(long)]
-    help_notification: bool,
-    #[clap(long)]
-    help_progress: bool,
-    #[clap(long)]
-    help_question: bool,
-    #[clap(long)]
-    help_warning: bool,
-    #[clap(long)]
-    help_scale: bool,
-    #[clap(long)]
-    help_text_info: bool,
-    #[clap(long)]
-    help_color_selection: bool,
-    #[clap(long)]
-    help_password: bool,
-    #[clap(long)]
-    help_forms: bool,
-    #[clap(long)]
-    help_misc: bool,
-    #[clap(long)]
-    help_gtk: bool
+    #[clap(long, display_order(1))]
+    pub help_all: bool,
+    #[clap(long, display_order(1))]
+    pub help_general: bool,
+    #[clap(long, display_order(1))]
+    pub help_calendar: bool,
+    #[clap(long, display_order(1))]
+    pub help_entry: bool,
+    #[clap(long, display_order(1))]
+    pub help_error: bool,
+    #[clap(long, display_order(1))]
+    pub help_info: bool,
+    #[clap(long, display_order(1))]
+    pub help_file_selection: bool,
+    #[clap(long, display_order(1))]
+    pub help_list: bool,
+    #[clap(long, display_order(1))]
+    pub help_notification: bool,
+    #[clap(long, display_order(1))]
+    pub help_progress: bool,
+    #[clap(long, display_order(1))]
+    pub help_question: bool,
+    #[clap(long, display_order(1))]
+    pub help_warning: bool,
+    #[clap(long, display_order(1))]
+    pub help_scale: bool,
+    #[clap(long, display_order(1))]
+    pub help_text_info: bool,
+    #[clap(long, display_order(1))]
+    pub help_color_selection: bool,
+    #[clap(long, display_order(1))]
+    pub help_password: bool,
+    #[clap(long, display_order(1))]
+    pub help_forms: bool,
+    #[clap(long, display_order(1))]
+    pub help_misc: bool,
+    #[clap(long, display_order(1))]
+    pub help_gtk: bool
 }
 
 #[derive(Parser, Debug)]
