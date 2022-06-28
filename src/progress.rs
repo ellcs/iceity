@@ -1,9 +1,11 @@
 use crate::messages::Message;
+use crate::args::Args;
 use iced_native::subscription;
 use tokio::io::{BufReader, AsyncBufReadExt};
 
 use std::str;
 use iced::{Row, Subscription, Alignment, Column, Element, ProgressBar, Text, Button, button};
+use iced::{executor, Command, Application, Settings};
 
 use clap::Parser;
 
@@ -66,18 +68,24 @@ enum StdinReaderState {
 }
 
 
-impl ProgressDialog {
+impl Application for ProgressDialog {
+    type Executor = executor::Default;
+    type Message = ProgressMessage;
+    type Flags = ();
 
-    pub fn new(args: crate::args::Args) -> ProgressDialog {
-        ProgressDialog {
+    fn new(_flags: ()) -> (Self, Command<ProgressMessage>) {
+        (Self {
             //value: args.progress_args.percentage.unwrap_or(0_f32),
             value: 0_f32, //args.progress_args.percentage.unwrap_or(0_f32),
             ..Default::default()
-        }
+        }, Command::none())
     }
 
+    fn title(&self) -> String {
+        String::from("Progress")
+    }
 
-    pub fn update(&mut self, message: ProgressMessage) {
+    fn update(&mut self, message: ProgressMessage) -> Command<ProgressMessage> {
         match message {
             ProgressMessage::SetProgress(x) => {
                 self.value = x
@@ -89,18 +97,16 @@ impl ProgressDialog {
                 std::process::exit(1);
             }
         }
+        Command::none()
     }
 
-    pub fn view(&mut self) -> Element<Message> {
+    fn view(&mut self) -> Element<ProgressMessage> {
         let ok = if self.value == 100_f32 {
-            Button::new(&mut self.ok, Text::new("Ok")).on_press(Message::Progress(ProgressMessage::Confirm))
+            Button::new(&mut self.ok, Text::new("Ok")).on_press(ProgressMessage::Confirm)
         } else {
             Button::new(&mut self.ok, Text::new("Ok"))
         };
         Column::new()
-            .push(
-                Text::new(format!("{}", self.value))
-            )
             .padding(20)
             .push(
                 Row::new()
@@ -116,14 +122,14 @@ impl ProgressDialog {
                     .spacing(20)
                     .push({ 
                         let abort = Button::new(&mut self.abort, Text::new("Abort"));
-                        abort.on_press(Message::Progress(ProgressMessage::Abort))
+                        abort.on_press(ProgressMessage::Abort)
                     })
                     .push(ok)
             )
             .into()
     }
 
-    pub fn subscription(&self) -> iced::Subscription<Message> {
+    fn subscription(&self) -> iced::Subscription<ProgressMessage> {
         struct WorkerId;
         let actor = |state| async move {
             match state {
@@ -140,7 +146,7 @@ impl ProgressDialog {
                             iced::futures::future::pending().await
                         },
                         Ok(_n) => {
-                            let n = Self::parse_progress_number(&buffer);
+                            let n = parse_progress_number(&buffer);
                             println!("read number: {}", n);
                             (Some(ProgressMessage::SetProgress(n as f32)), StdinReaderState::Reading(reader)) 
                         },
@@ -154,26 +160,27 @@ impl ProgressDialog {
         };
         subscription::unfold(std::any::TypeId::of::<WorkerId>(), 
                              StdinReaderState::Start,
-                             actor).map(Message::Progress)
+                             actor)
     }
 
-    fn parse_progress_number(buffer : &Vec<u8>) -> f32 {
-        println!("buffer content: {:?}", buffer);
-        let s = str::from_utf8(&buffer).map(|p| p.strip_suffix('\n').unwrap_or("")).unwrap_or("");
-        println!("buffer s: {:?}", s);
-        s.parse::<f32>().unwrap_or(0_f32)
-    }
+}
+
+fn parse_progress_number(buffer : &Vec<u8>) -> f32 {
+    println!("buffer content: {:?}", buffer);
+    let s = str::from_utf8(&buffer).map(|p| p.strip_suffix('\n').unwrap_or("")).unwrap_or("");
+    println!("buffer s: {:?}", s);
+    s.parse::<f32>().unwrap_or(0_f32)
 }
 
 #[test]
 fn test_parse_progress_number() {
-    assert_eq!(100_f32, ProgressDialog::parse_progress_number(&Vec::from("100\n")));
-    assert_eq!(30.0, ProgressDialog::parse_progress_number(&Vec::from("30.0\n")));
-    assert_eq!(30.5, ProgressDialog::parse_progress_number(&Vec::from("30.5\n")));
-    assert_eq!(25_f32, ProgressDialog::parse_progress_number(&Vec::from("25\n")));
-    assert_eq!(0_f32, ProgressDialog::parse_progress_number(&Vec::from("0\n")));
-    assert_eq!(0_f32, ProgressDialog::parse_progress_number(&Vec::from("a\n")));
-    assert_eq!(0_f32, ProgressDialog::parse_progress_number(&Vec::from("\n")));
-    assert_eq!(0_f32, ProgressDialog::parse_progress_number(&Vec::from("")));
+    assert_eq!(100_f32, parse_progress_number(&Vec::from("100\n")));
+    assert_eq!(30.0, parse_progress_number(&Vec::from("30.0\n")));
+    assert_eq!(30.5, parse_progress_number(&Vec::from("30.5\n")));
+    assert_eq!(25_f32, parse_progress_number(&Vec::from("25\n")));
+    assert_eq!(0_f32, parse_progress_number(&Vec::from("0\n")));
+    assert_eq!(0_f32, parse_progress_number(&Vec::from("a\n")));
+    assert_eq!(0_f32, parse_progress_number(&Vec::from("\n")));
+    assert_eq!(0_f32, parse_progress_number(&Vec::from("")));
 }
 
