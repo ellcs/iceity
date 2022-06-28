@@ -1,11 +1,9 @@
-use crate::messages::Message;
-use crate::args::Args;
 use iced_native::subscription;
 use tokio::io::{BufReader, AsyncBufReadExt};
 
 use std::str;
-use iced::{Row, Subscription, Alignment, Column, Element, ProgressBar, Text, Button, button};
-use iced::{executor, Command, Application, Settings};
+use iced::{Row, Column, Element, ProgressBar, Text, Button, button};
+use iced::{executor, Command, Application};
 
 use clap::Parser;
 

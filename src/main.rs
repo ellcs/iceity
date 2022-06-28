@@ -1,14 +1,9 @@
 use iceity::args::Args;
-use iceity::messages::Message;
 use iceity::progress::{ProgressDialog, ProgressArgs};
 
 use clap::{Parser, CommandFactory};
-use iced::{Element, executor, Command, Application, Subscription, Settings};
+use iced::{Application, Settings};
 
-
-pub enum ChosenWindow {
-    Progress(ProgressDialog)
-}
 
 fn main() -> iced::Result {
     let args = Args::parse();
