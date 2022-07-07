@@ -10,7 +10,7 @@ use clap::Parser;
 use crate::general_args::GeneralArgs;
 
 
-#[derive(Parser, Debug)]
+#[derive(Parser, Debug, Default)]
 //#[clap(override_usage("iceity --progress [OPTIONS]"))]
 pub struct ProgressArgs {
 	#[clap(flatten)]
