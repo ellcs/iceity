@@ -22,7 +22,7 @@ macro_rules! adjust_settings_by_general_args {
             $settings.window.size = (width, $settings.window.size.1);
         }
         if let Some(height) = $settings.flags.general_args.height {
-            $settings.window.size = (height, $settings.window.size.0);
+            $settings.window.size = ($settings.window.size.0, height);
         }
         $settings.window.resizable = false;
     }
