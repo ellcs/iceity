@@ -7,7 +7,6 @@ use iced::{executor, Command, Application};
 
 use clap::Parser;
 
-use crate::args::Args;
 use crate::general_args::GeneralArgs;
 
 
