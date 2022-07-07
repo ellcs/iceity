@@ -14,15 +14,6 @@ pub struct GeneralArgs {
 }
 
 #[derive(Parser, Debug)]
-#[clap(override_usage("iceity --entry [OPTIONS]"))]
-pub struct EntryArgs {
-    /// Set the dialog text.
-    /// Not implemented
-    #[clap(long, requires("entry"))]
-    pub textb: Option<String>,
-}
-
-#[derive(Parser, Debug)]
 #[clap(override_usage("iceity --progress [OPTIONS]"))]
 pub struct ProgressArgs {
     /// Set the dialog text.

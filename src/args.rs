@@ -1,5 +1,6 @@
 use clap::Parser;
-use crate::progress::{ProgressArgs, EntryArgs};
+use crate::progress::ProgressArgs;
+use crate::entry::EntryArgs;
 
 #[derive(Parser, Debug)]
 pub struct Helps {
