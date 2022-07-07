@@ -17,7 +17,6 @@ pub struct GeneralArgs {
 #[clap(override_usage("iceity --progress [OPTIONS]"))]
 pub struct ProgressArgs {
     /// Set the dialog text.
-    /// Not implemented
     //#[clap(long, requires("progress"))]
     #[clap(long)]
     pub text: Option<String>,
@@ -118,6 +117,7 @@ impl Application for ProgressDialog {
             Button::new(&mut self.ok, Text::new("Ok"))
         };
         Column::new()
+            .push(Text::new(self.args.progress_args.text.as_ref().unwrap_or(&String::from(""))))
             .padding(20)
             .push(
                 Row::new()
