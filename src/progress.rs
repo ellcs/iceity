@@ -7,12 +7,27 @@ use iced::{executor, Command, Application};
 
 use clap::Parser;
 
+use crate::args::Args;
+
+pub struct GeneralArgs {
+
+}
+
+#[derive(Parser, Debug)]
+#[clap(override_usage("iceity --entry [OPTIONS]"))]
+pub struct EntryArgs {
+    /// Set the dialog text.
+    /// Not implemented
+    #[clap(long, requires("entry"))]
+    pub textb: Option<String>,
+}
 
 #[derive(Parser, Debug)]
 #[clap(override_usage("iceity --progress [OPTIONS]"))]
 pub struct ProgressArgs {
     /// Set the dialog text.
     /// Not implemented
+    //#[clap(long, requires("progress"))]
     #[clap(long)]
     pub text: Option<String>,
 
@@ -69,9 +84,9 @@ enum StdinReaderState {
 impl Application for ProgressDialog {
     type Executor = executor::Default;
     type Message = ProgressMessage;
-    type Flags = ();
+    type Flags = Args;
 
-    fn new(_flags: ()) -> (Self, Command<ProgressMessage>) {
+    fn new(_flags: Self::Flags) -> (Self, Command<ProgressMessage>) {
         (Self {
             //value: args.progress_args.percentage.unwrap_or(0_f32),
             value: 0_f32, //args.progress_args.percentage.unwrap_or(0_f32),
@@ -181,4 +196,3 @@ fn test_parse_progress_number() {
     assert_eq!(0_f32, parse_progress_number(&Vec::from("\n")));
     assert_eq!(0_f32, parse_progress_number(&Vec::from("")));
 }
-
