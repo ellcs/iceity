@@ -52,8 +52,10 @@ pub struct ProgressArgs {
     pub time_remaining: bool
 }
 
-#[derive(Default)]
+//#[derive(Default)]
 pub struct ProgressDialog {
+    pub args: Args,
+
     pub value: f32,
     pub ok: button::State,
     pub abort: button::State,
@@ -77,11 +79,14 @@ impl Application for ProgressDialog {
     type Message = ProgressMessage;
     type Flags = Args;
 
-    fn new(_flags: Self::Flags) -> (Self, Command<ProgressMessage>) {
+    fn new(flags: Self::Flags) -> (Self, Command<ProgressMessage>) {
+        let start_value = flags.progress_args.percentage.unwrap_or(0_f32);
         (Self {
-            //value: args.progress_args.percentage.unwrap_or(0_f32),
-            value: 0_f32, //args.progress_args.percentage.unwrap_or(0_f32),
-            ..Default::default()
+            args: flags,
+            value: start_value,
+
+            ok: Default::default(),
+            abort: Default::default()
         }, Command::none())
     }
 
