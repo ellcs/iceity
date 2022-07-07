@@ -95,7 +95,7 @@ impl Application for ProgressDialog {
     }
 
     fn title(&self) -> String {
-        String::from("Progress")
+        self.args.general_args.title.as_ref().unwrap_or(&String::from("Progress")).to_string()
     }
 
     fn update(&mut self, message: ProgressMessage) -> Command<ProgressMessage> {
