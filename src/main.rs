@@ -1,4 +1,4 @@
-use iceity::args::Args;
+use iceity::args::{Args, ChosenWindow};
 use iceity::progress::{ProgressDialog, ProgressArgs};
 
 use std::process;
@@ -21,6 +21,11 @@ fn main() -> iced::Result {
     let args = Args::parse();
     match_help_and_exit!(args, help_progress, ProgressArgs);
 
-    let settings = Settings::with_flags(args);
-    ProgressDialog::run(settings)
+    match args.chosen_window {
+        ChosenWindow::Progress(progress_args) => {
+            let settings = Settings::with_flags(progress_args);
+            ProgressDialog::run(settings)
+        },
+        _ => panic!()
+    }
 }

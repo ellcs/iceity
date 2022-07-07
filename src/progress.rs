@@ -8,14 +8,15 @@ use iced::{executor, Command, Application};
 use clap::Parser;
 
 use crate::args::Args;
+use crate::general_args::GeneralArgs;
 
-pub struct GeneralArgs {
-
-}
 
 #[derive(Parser, Debug)]
-#[clap(override_usage("iceity --progress [OPTIONS]"))]
+//#[clap(override_usage("iceity --progress [OPTIONS]"))]
 pub struct ProgressArgs {
+	#[clap(flatten)]
+	pub general_args: GeneralArgs,
+
     /// Set the dialog text.
     //#[clap(long, requires("progress"))]
     #[clap(long)]
@@ -40,7 +41,6 @@ pub struct ProgressArgs {
     pub auto_kill: bool,
 
     /// Hide Cancel button
-    /// Not implemented
     #[clap(long)]
     pub no_cancel: bool,
 
@@ -50,9 +50,16 @@ pub struct ProgressArgs {
     pub time_remaining: bool
 }
 
+
+#[test]
+fn verifys_progress_args() {
+    use clap::CommandFactory;
+    ProgressArgs::command().debug_assert()
+}
+
 //#[derive(Default)]
 pub struct ProgressDialog {
-    pub args: Args,
+    pub args: ProgressArgs,
 
     pub value: f32,
     pub ok: button::State,
@@ -75,10 +82,10 @@ enum StdinReaderState {
 impl Application for ProgressDialog {
     type Executor = executor::Default;
     type Message = ProgressMessage;
-    type Flags = Args;
+    type Flags = ProgressArgs;
 
     fn new(flags: Self::Flags) -> (Self, Command<ProgressMessage>) {
-        let start_value = flags.progress_args.percentage.unwrap_or(0_f32);
+        let start_value = flags.percentage.unwrap_or(0_f32);
         (Self {
             args: flags,
             value: start_value,
@@ -96,7 +103,7 @@ impl Application for ProgressDialog {
         match message {
             ProgressMessage::SetProgress(x) => {
                 self.value = x;
-                if self.args.progress_args.auto_close && self.value == 100_f32 {
+                if self.args.auto_close && self.value == 100_f32 {
                     std::process::exit(0);
                 }
             },
@@ -116,8 +123,9 @@ impl Application for ProgressDialog {
         } else {
             Button::new(&mut self.ok, Text::new("Ok"))
         };
-        Column::new()
-            .push(Text::new(self.args.progress_args.text.as_ref().unwrap_or(&String::from(""))))
+
+        let view = Column::new()
+            .push(Text::new(self.args.text.as_ref().unwrap_or(&String::from(""))))
             .padding(20)
             .push(
                 Row::new()
@@ -127,8 +135,10 @@ impl Application for ProgressDialog {
                         Text::new(format!("{}", self.value))
                     )
             )
-            .padding(20)
-            .push(
+            .padding(20);
+
+        if !self.args.no_cancel {
+            view.push(
                 Row::new()
                     .spacing(20)
                     .push({ 
@@ -136,8 +146,10 @@ impl Application for ProgressDialog {
                         abort.on_press(ProgressMessage::Abort)
                     })
                     .push(ok)
-            )
-            .into()
+            ).into()
+        } else {
+            view.into()
+        }
     }
 
     fn subscription(&self) -> iced::Subscription<ProgressMessage> {

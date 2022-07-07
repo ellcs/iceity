@@ -46,81 +46,51 @@ pub struct Helps {
 
 
 #[derive(Parser, Debug)]
-pub struct ChosenWindow {
-    #[clap(long, conflicts_with_all(&["entry", "error", "info", "file-selection", "list",
-    "notification", "progress", "question", "warning", "scale", "text-info", "color-selection",
-    "password", "forms"]))]
-    pub calendar: bool,
+pub enum ChosenWindow {
+    #[clap(name = "--calendar")]
+    Calendar,
 
-    #[clap(long, conflicts_with_all(&["calendar", "error", "info", "file-selection", "list",
-    "notification", "progress", "question", "warning", "scale", "text-info", "color-selection",
-    "password", "forms"]))]
-    pub entry: bool,
+    #[clap(name = "--entry")]
+    Entry(EntryArgs),
 
-    #[clap(long, conflicts_with_all(&["calendar", "entry", "info", "file-selection", "list",
-    "notification", "progress", "question", "warning", "scale", "text-info", "color-selection",
-    "password", "forms"]))]
-    pub error: bool,
+    #[clap(name = "--error")]
+    Error,
 
-    #[clap(long, conflicts_with_all(&["calendar", "entry", "error", "file-selection", "list",
-    "notification", "progress", "question", "warning", "scale", "text-info", "color-selection",
-    "password", "forms"]))]
-    pub info: bool,
+    #[clap(name = "--info")]
+    Info,
 
-    #[clap(long, conflicts_with_all(&["calendar", "entry", "error", "info", "list", "notification",
-    "progress", "question", "warning", "scale", "text-info", "color-selection", "password",
-    "forms"]))]
-    pub file_selection: bool,
+    #[clap(name = "--file-selection")]
+    FileSelection,
 
-    #[clap(long, conflicts_with_all(&["calendar", "entry", "error", "info", "file-selection",
-    "notification", "progress", "question", "warning", "scale", "text-info", "color-selection",
-    "password", "forms"]))]
-    pub list: bool,
+    #[clap(name = "--list")]
+    List,
 
-    #[clap(long, conflicts_with_all(&["calendar", "entry", "error", "info", "file-selection",
-    "list", "progress", "question", "warning", "scale", "text-info", "color-selection", "password",
-    "forms"]))]
-    pub notification: bool,
+    #[clap(name = "--notification")]
+    Notification,
 
-    #[clap(long, conflicts_with_all(&["calendar", "entry", "error", "info", "file-selection",
-    "list", "notification", "question", "warning", "scale", "text-info", "color-selection",
-    "password", "forms"]))]
-    pub progress: bool,
+    #[clap(name = "--progress")]
+    Progress(ProgressArgs),
 
-    #[clap(long, conflicts_with_all(&["calendar", "entry", "error", "info", "file-selection",
-    "list", "notification", "progress", "warning", "scale", "text-info", "color-selection",
-    "password", "forms"]))]
-    pub question: bool,
+    #[clap(name = "--question")]
+    Question,
 
-    #[clap(long, conflicts_with_all(&["calendar", "entry", "error", "info", "file-selection",
-    "list", "notification", "progress", "question", "scale", "text-info", "color-selection",
-    "password", "forms"]))]
-    pub warning: bool,
+    #[clap(name = "--warning")]
+    Warning,
 
-    #[clap(long, conflicts_with_all(&["calendar", "entry", "error", "info", "file-selection",
-    "list", "notification", "progress", "question", "warning", "text-info", "color-selection",
-    "password", "forms"]))]
-    pub scale: bool,
+    #[clap(name = "--scale")]
+    Scale,
 
-    #[clap(long, conflicts_with_all(&["calendar", "entry", "error", "info", "file-selection",
-    "list", "notification", "progress", "question", "warning", "scale", "color-selection",
-    "password", "forms"]))]
-    pub text_info: bool,
+    #[clap(name = "--text-info")]
+    TextInfo,
 
-    #[clap(long, conflicts_with_all(&["calendar", "entry", "error", "info", "file-selection",
-    "list", "notification", "progress", "question", "warning", "scale", "text-info", "password",
-    "forms"]))]
-    pub color_selection: bool,
+    #[clap(name = "--color-selection")]
+    ColorSelection,
 
-    #[clap(long, conflicts_with_all(&["calendar", "entry", "error", "info", "file-selection",
-    "list", "notification", "progress", "question", "warning", "scale", "text-info",
-    "color-selection", "forms"]))]
-    pub password: bool,
+    #[clap(name = "--password")]
+    Password,
 
-    #[clap(long, conflicts_with_all(&["calendar", "entry", "error", "info", "file-selection",
-    "list", "notification", "progress", "question", "warning", "scale", "text-info",
-    "color-selection", "password"]))]
-    pub forms: bool,
+    #[clap(name = "--form")]
+    Forms,
 }
 
 #[derive(Parser, Debug)]
@@ -129,21 +99,15 @@ pub struct Args {
     #[clap(flatten)]
     pub helps: Helps,
 
-    #[clap(flatten)]
+    #[clap(subcommand)]
     pub chosen_window: ChosenWindow,
-
-    #[clap(flatten)]
-    pub progress_args: ProgressArgs,
-
-    #[clap(flatten)]
-    pub entry_args: EntryArgs,
 
     #[clap(long)]
     pub display: Option<String>,
 }
 
 #[test]
-fn verify_progress_args() {
+fn verify_args() {
     use clap::CommandFactory;
     Args::command().debug_assert()
 }
