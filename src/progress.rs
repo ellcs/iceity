@@ -32,7 +32,6 @@ pub struct ProgressArgs {
     pub pulsate: bool,
 
     /// Dismiss the dialog when 100% has been reached
-    /// Not implemented
     #[clap(long)]
     pub auto_close: bool,
 
@@ -97,7 +96,10 @@ impl Application for ProgressDialog {
     fn update(&mut self, message: ProgressMessage) -> Command<ProgressMessage> {
         match message {
             ProgressMessage::SetProgress(x) => {
-                self.value = x
+                self.value = x;
+                if self.args.progress_args.auto_close && self.value == 100_f32 {
+                    std::process::exit(0);
+                }
             },
             ProgressMessage::Confirm => {
                 std::process::exit(0);
