@@ -3,7 +3,7 @@ use tokio::io::{BufReader, AsyncBufReadExt};
 
 use std::str;
 use iced::{Row, Column, Element, ProgressBar, Text, Button, button};
-use iced::{executor, Command, Application};
+use iced::{executor, alignment, Length, Command, Application};
 
 use clap::Parser;
 
@@ -117,11 +117,19 @@ impl Application for ProgressDialog {
     }
 
     fn view(&mut self) -> Element<ProgressMessage> {
-        let ok = if self.value == 100_f32 {
-            Button::new(&mut self.ok, Text::new("Ok")).on_press(ProgressMessage::Confirm)
-        } else {
-            Button::new(&mut self.ok, Text::new("Ok"))
+        let mut ok = Button::new(&mut self.ok, Text::new("Ok")).width(Length::FillPortion(1));
+        if self.value == 100_f32 {
+            ok = ok.on_press(ProgressMessage::Confirm)
         };
+
+        let mut button_row = Row::new();
+        if !self.args.no_cancel {
+            button_row = button_row.push({ 
+                let abort = Button::new(&mut self.abort, Text::new("Abort"));
+                abort.on_press(ProgressMessage::Abort).width(Length::FillPortion(1))
+            });
+        };
+        button_row = button_row.push(ok);
 
         let view = Column::new()
             .push(Text::new(self.args.text.as_ref().unwrap_or(&String::from(""))))
@@ -131,24 +139,13 @@ impl Application for ProgressDialog {
                     .push(
                         ProgressBar::new(0.0..=100.0, self.value)
                     ).push(
-                        Text::new(format!("{}", self.value))
+                        Text::new(format!("{}", self.value)).width(Length::Units(30)).vertical_alignment(alignment::Vertical::Bottom)
                     )
             )
-            .padding(20);
+            .padding(20)
+            .push(button_row);
 
-        if !self.args.no_cancel {
-            view.push(
-                Row::new()
-                    .spacing(20)
-                    .push({ 
-                        let abort = Button::new(&mut self.abort, Text::new("Abort"));
-                        abort.on_press(ProgressMessage::Abort)
-                    })
-                    .push(ok)
-            ).into()
-        } else {
-            view.into()
-        }
+        view.into()
     }
 
     fn subscription(&self) -> iced::Subscription<ProgressMessage> {
