@@ -1,6 +1,9 @@
 use iceity::args::{Args, ChosenWindow};
 use iceity::progress::{ProgressDialog, ProgressArgs};
 
+#[macro_use]
+extern crate log;
+
 use std::process;
 
 use clap::{Parser, CommandFactory};
@@ -44,6 +47,7 @@ fn test_settings_by_general_args_sets_width_and_height() {
 }
 
 fn main() -> iced::Result {
+    env_logger::init();
     let args = Args::parse();
     match_help_and_exit!(args, help_progress, ProgressArgs);
 

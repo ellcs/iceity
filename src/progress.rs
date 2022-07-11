@@ -8,6 +8,7 @@ use iced::{executor, alignment, Length, Command, Application};
 use clap::Parser;
 
 use crate::general_args::GeneralArgs;
+use log::debug;
 
 
 #[derive(Parser, Debug, Default)]
@@ -85,6 +86,7 @@ impl Application for ProgressDialog {
 
     fn new(flags: Self::Flags) -> (Self, Command<ProgressMessage>) {
         let start_value = flags.percentage.unwrap_or(0_f32);
+        debug!("Starting progress dialog");
         (Self {
             args: flags,
             value: start_value,
@@ -95,7 +97,8 @@ impl Application for ProgressDialog {
     }
 
     fn title(&self) -> String {
-        self.args.general_args.title.as_ref().unwrap_or(&String::from("Progress")).to_string()
+        let default = String::from("Progress");
+        self.args.general_args.title.as_ref().unwrap_or(&default).to_string()
     }
 
     fn update(&mut self, message: ProgressMessage) -> Command<ProgressMessage> {
@@ -139,7 +142,7 @@ impl Application for ProgressDialog {
                     .push(
                         ProgressBar::new(0.0..=100.0, self.value)
                     ).push(
-                        Text::new(format!("{}", self.value)).width(Length::Units(30)).vertical_alignment(alignment::Vertical::Bottom)
+                        Text::new(format!("{}", self.value)).size(30).width(Length::Units(45)).vertical_alignment(alignment::Vertical::Bottom)
                     )
             )
             .padding(20)
@@ -162,15 +165,17 @@ impl Application for ProgressDialog {
                     match res {
                         Ok(0) => {
                             // await all pending futures (for ever)
+                            debug!("Stdin has been closed (EOF)");
                             iced::futures::future::pending().await
                         },
                         Ok(_n) => {
                             let n = parse_progress_number(&buffer);
-                            println!("read number: {}", n);
+                            debug!("Number parsed: {}", n);
                             (Some(ProgressMessage::SetProgress(n as f32)), StdinReaderState::Reading(reader)) 
                         },
                         Err(_) => {
                             // await all pending futures (for ever)
+                            debug!("An error occured while reading from stdin (EOF)");
                             iced::futures::future::pending().await
                         }
                     }
@@ -185,9 +190,7 @@ impl Application for ProgressDialog {
 }
 
 fn parse_progress_number(buffer : &Vec<u8>) -> f32 {
-    println!("buffer content: {:?}", buffer);
     let s = str::from_utf8(&buffer).map(|p| p.strip_suffix('\n').unwrap_or("")).unwrap_or("");
-    println!("buffer s: {:?}", s);
     s.parse::<f32>().unwrap_or(0_f32)
 }
 
