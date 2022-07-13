@@ -1,6 +1,6 @@
 use clap::Parser;
 
-#[derive(Parser, Debug)]
+#[derive(Parser, Default, Debug)]
 pub struct GeneralArgs {
   //--title=TITEL                                       Den Dialogtitel festlegen
 	#[clap(long)]
