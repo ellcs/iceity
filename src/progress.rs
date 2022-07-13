@@ -128,8 +128,11 @@ impl Application for ProgressDialog {
         let mut button_row = Row::new();
         if !self.args.no_cancel {
             button_row = button_row.push({ 
-                let abort = Button::new(&mut self.abort, Text::new("Abort"));
-                abort.on_press(ProgressMessage::Abort).width(Length::FillPortion(1))
+                let mut abort = Button::new(&mut self.abort, Text::new("Abort")).width(Length::FillPortion(1));
+                if self.value != 100_f32 {
+                    abort = abort.on_press(ProgressMessage::Abort);
+                }
+                abort
             });
         };
         button_row = button_row.push(ok);
