@@ -15,8 +15,8 @@ use log::{debug, error};
 #[derive(Parser, Debug, Default)]
 //#[clap(override_usage("iceity --progress [OPTIONS]"))]
 pub struct ProgressArgs {
-	#[clap(flatten)]
-	pub general_args: GeneralArgs,
+    #[clap(flatten)]
+    pub general_args: GeneralArgs,
 
     /// Set the dialog text.
     #[clap(long)]

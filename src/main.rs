@@ -10,13 +10,13 @@ use clap::{Parser, CommandFactory};
 use iced::{Application, Settings};
 
 macro_rules! match_help_and_exit {
-	($args:expr, $method:ident, $struct:ident) => {
-		if $args.helps.$method {
-			let mut pargs = $struct::command();
-			pargs.print_help().unwrap();
-			process::exit(0);
-		}
-	}
+    ($args:expr, $method:ident, $struct:ident) => {
+    	if $args.helps.$method {
+    		let mut pargs = $struct::command();
+    		pargs.print_help().unwrap();
+    		process::exit(0);
+    	}
+    }
 }
 
 macro_rules! adjust_settings_by_general_args {
