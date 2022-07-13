@@ -1,5 +1,6 @@
 use iced_native::subscription;
 use tokio::io::{BufReader, AsyncBufReadExt};
+use tokio::time;
 
 use std::str;
 use iced::{Row, Column, Element, ProgressBar, Text, Button, button};
@@ -34,8 +35,7 @@ pub struct ProgressArgs {
     #[clap(long)]
     pub auto_close: bool,
 
-    /// Kill parent process if Cancel button is pressed
-    /// Not implemented
+    /// Not implemented: Kill parent process if Cancel button is pressed
     #[clap(long)]
     pub auto_kill: bool,
 
@@ -59,6 +59,7 @@ fn verifys_progress_args() {
 //#[derive(Default)]
 pub struct ProgressDialog {
     pub args: ProgressArgs,
+    pub time_elapsed: time::Instant,
 
     pub value: f32,
     pub ok: button::State,
@@ -69,7 +70,7 @@ pub struct ProgressDialog {
 pub enum ProgressMessage {
     Confirm,
     Abort,
-    SetProgress(f32)
+    SetProgress(f32),
 }
 
 enum StdinReaderState {
@@ -90,6 +91,7 @@ impl Application for ProgressDialog {
         (Self {
             args: flags,
             value: start_value,
+            time_elapsed: time::Instant::now(),
 
             ok: Default::default(),
             abort: Default::default()
@@ -153,7 +155,19 @@ impl Application for ProgressDialog {
                     )
             )
             .padding(20)
-            .push(button_row);
+            .push(button_row)
+            .push({
+                let now = self.time_elapsed.elapsed().as_secs();
+
+                let mut time_remaining = String::from("");
+                let percentage_u64 = self.value as u64;
+                if percentage_u64 > 0 && percentage_u64 < 100 {
+                    time_remaining = format!("Remaining time: {}", 100 * now / percentage_u64);
+                }
+
+                Text::new(format!("{}", time_remaining))
+                    .size(30)
+            });
 
         view.into()
     }
@@ -171,18 +185,21 @@ impl Application for ProgressDialog {
                     let res = reader.read_until(b'\n', &mut buffer).await;
                     match res {
                         Ok(0) => {
-                            // await all pending futures (for ever)
                             debug!("Stdin has been closed (EOF)");
                             (Some(ProgressMessage::SetProgress(100.0)), StdinReaderState::Done) 
                         },
                         Ok(_n) => {
                             let n = parse_progress_number(&buffer);
                             debug!("Number parsed: {}", n);
-                            (Some(ProgressMessage::SetProgress(n as f32)), StdinReaderState::Reading(reader)) 
+                            if n < 100_f32 {
+                                (Some(ProgressMessage::SetProgress(n)), StdinReaderState::Reading(reader)) 
+                            } else {
+                                (Some(ProgressMessage::SetProgress(100_f32)), StdinReaderState::Done) 
+                            }
                         },
                         Err(_) => {
-                            // await all pending futures (for ever)
                             error!("An error occured while reading from stdin");
+                            // await all pending futures (for ever)
                             iced::futures::future::pending().await
                         }
                     }
@@ -194,6 +211,7 @@ impl Application for ProgressDialog {
                 }
             }
         };
+
         subscription::unfold(std::any::TypeId::of::<WorkerId>(), 
                              StdinReaderState::Start,
                              actor)
