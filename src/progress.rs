@@ -8,7 +8,7 @@ use iced::{executor, alignment, Length, Command, Application};
 use clap::Parser;
 
 use crate::general_args::GeneralArgs;
-use log::debug;
+use log::{debug, error};
 
 
 #[derive(Parser, Debug, Default)]
@@ -75,7 +75,8 @@ pub enum ProgressMessage {
 
 enum StdinReaderState {
     Start,
-    Reading(BufReader<tokio::io::Stdin>)
+    Reading(BufReader<tokio::io::Stdin>),
+    Done
 }
 
 
@@ -170,7 +171,7 @@ impl Application for ProgressDialog {
                         Ok(0) => {
                             // await all pending futures (for ever)
                             debug!("Stdin has been closed (EOF)");
-                            iced::futures::future::pending().await
+                            (Some(ProgressMessage::SetProgress(100.0)), StdinReaderState::Done) 
                         },
                         Ok(_n) => {
                             let n = parse_progress_number(&buffer);
@@ -179,10 +180,15 @@ impl Application for ProgressDialog {
                         },
                         Err(_) => {
                             // await all pending futures (for ever)
-                            debug!("An error occured while reading from stdin (EOF)");
+                            error!("An error occured while reading from stdin");
                             iced::futures::future::pending().await
                         }
                     }
+                },
+                StdinReaderState::Done => { 
+                    // when the stream reader is closed, we arrived at a dead
+                    // end...
+                    iced::futures::future::pending().await
                 }
             }
         };
