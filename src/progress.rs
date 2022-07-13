@@ -142,7 +142,11 @@ impl Application for ProgressDialog {
                     .push(
                         ProgressBar::new(0.0..=100.0, self.value)
                     ).push(
-                        Text::new(format!("{}", self.value)).size(30).width(Length::Units(45)).vertical_alignment(alignment::Vertical::Bottom)
+                        Text::new(format!("{}", self.value))
+                            .size(30)
+                            .width(Length::Units(45))
+                            .vertical_alignment(alignment::Vertical::Bottom)
+                            .horizontal_alignment(alignment::Horizontal::Right)
                     )
             )
             .padding(20)
