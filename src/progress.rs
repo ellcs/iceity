@@ -18,7 +18,6 @@ pub struct ProgressArgs {
 	pub general_args: GeneralArgs,
 
     /// Set the dialog text.
-    //#[clap(long, requires("progress"))]
     #[clap(long)]
     pub text: Option<String>,
 
