@@ -1,1 +1,1 @@
-pub mod general_args;
+pub mod args;

@@ -1,5 +1,5 @@
 use clap::Parser;
-use crate::progress::ProgressArgs;
+use crate::progress::args::ProgressArgs;
 use crate::entry::EntryArgs;
 
 #[derive(Parser, Debug)]
