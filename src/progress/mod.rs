@@ -8,7 +8,7 @@ use iced::{executor, alignment, Length, Command, Application};
 
 use clap::Parser;
 
-use crate::general_args::GeneralArgs;
+use crate::shared::general_args::GeneralArgs;
 use log::{debug, error};
 
 
