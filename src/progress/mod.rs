@@ -160,13 +160,17 @@ impl Application for ProgressDialog {
                 let now = self.time_elapsed.elapsed().as_secs();
 
                 let mut time_remaining = String::from("");
-                let percentage_u64 = self.value as u64;
-                if percentage_u64 > 0 && percentage_u64 < 100 {
-                    time_remaining = format!("Remaining time: {}", 100 * now / percentage_u64);
+                if self.value > 0_f32 && self.value < 100_f32 {
+                    let mut remaining = (100 * now) / self.value as u64;
+                    remaining -= now;
+
+                    let seconds = remaining % 60;
+                    let minutes = remaining / 60;
+                    time_remaining = format!("Remaining time: {}:{}", minutes, seconds);
                 }
 
                 Text::new(format!("{}", time_remaining))
-                    .size(30)
+                    .size(20)
             });
 
         view.into()

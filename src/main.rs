@@ -49,6 +49,12 @@ fn test_settings_by_general_args_sets_width_and_height() {
 fn main() -> iced::Result {
     env_logger::init();
     let args = Args::parse();
+    let c = Args::command();
+    let m = c.get_matches();
+    let p = m.indices_of("--progress");
+    debug!("{:?}", m.indices_of("option").unwrap().collect::<Vec<_>>());
+    panic!();
+
     match_help_and_exit!(args, help_progress, ProgressArgs);
 
     match args.chosen_window {
