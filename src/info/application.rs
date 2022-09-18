@@ -12,6 +12,7 @@ pub struct InfoDialog {
     pub ok: button::State,
 }
 
+#[allow(dead_code)]
 impl Application for InfoDialog {
     type Executor = executor::Default;
     type Message = InfoMessage;
@@ -36,7 +37,7 @@ impl Application for InfoDialog {
                 std::process::exit(0);
             }
         }
-        Command::none()
+        // Command::none()
     }
 
     fn view(&mut self) -> Element<InfoMessage> {
