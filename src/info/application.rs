@@ -1,12 +1,9 @@
-use tokio::io::{BufReader, AsyncBufReadExt};
-use tokio::time;
-
 use super::args::InfoArgs;
 use super::messages::InfoMessage;
 
 
-use iced::{Row, Column, Element, ProgressBar, Text, Button, button};
-use iced::{executor, alignment, Length, Command, Application};
+use iced::{Column, Element, Text, Button, button, executor, Length, Command, 
+           Application};
 
 
 pub struct InfoDialog {

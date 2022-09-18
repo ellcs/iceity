@@ -1,13 +1,9 @@
-use tokio::io::{BufReader, AsyncBufReadExt};
-use tokio::time;
-
 use super::args::EntryArgs;
 use super::messages::EntryMessage;
 
 
-use iced::{Row, Column, Element, ProgressBar, Text, Button, button};
-use iced::{executor, alignment, Length, Command, Application};
-use iced::{text_input, TextInput};
+use iced::{Row, Column, Element, Text, Button, button, executor, Length, 
+           Command, Application, text_input, TextInput};
 
 
 pub struct EntryDialog {

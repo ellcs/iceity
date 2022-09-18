@@ -60,17 +60,17 @@ fn main() -> iced::Result {
         ChosenWindow::Progress(progress_args) => {
             let mut settings = Settings::with_flags(progress_args);
             adjust_settings_by_general_args!(settings);
-            ProgressDialog::run(Settings::from(settings))
+            ProgressDialog::run(settings)
         },
         ChosenWindow::Info(progress_args) => {
             let mut settings = Settings::with_flags(progress_args);
             adjust_settings_by_general_args!(settings);
-            InfoDialog::run(Settings::from(settings))
+            InfoDialog::run(settings)
         },
         ChosenWindow::Entry(entry_args) => { 
             let mut settings = Settings::with_flags(entry_args);
             adjust_settings_by_general_args!(settings);
-            EntryDialog::run(Settings::from(settings))
+            EntryDialog::run(settings)
         },
         ChosenWindow::Calendar => { panic!() },
         ChosenWindow::Error => { panic!() },

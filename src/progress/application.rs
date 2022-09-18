@@ -97,7 +97,7 @@ impl Application for ProgressDialog {
                     .push(
                         ProgressBar::new(0.0..=100.0, self.value)
                     ).push(
-                        Text::new(format!("{}", self.value))
+                        Text::new(self.value.to_string())
                             .size(30)
                             .width(Length::Units(45))
                             .vertical_alignment(alignment::Vertical::Bottom)
@@ -119,7 +119,7 @@ impl Application for ProgressDialog {
                     time_remaining = format!("Remaining time: {}:{}", minutes, seconds);
                 }
 
-                Text::new(format!("{}", time_remaining))
+                Text::new(time_remaining)
                     .size(20)
             });
 
@@ -173,8 +173,8 @@ impl Application for ProgressDialog {
 
 }
 
-fn parse_progress_number(buffer : &Vec<u8>) -> f32 {
-    let s = str::from_utf8(&buffer).map(|p| p.strip_suffix('\n').unwrap_or("")).unwrap_or("");
+fn parse_progress_number(buffer : &[u8]) -> f32 {
+    let s = str::from_utf8(buffer).map(|p| p.strip_suffix('\n').unwrap_or("")).unwrap_or("");
     s.parse::<f32>().unwrap_or(0_f32)
 }
 
