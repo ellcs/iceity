@@ -1,21 +1,35 @@
 use clap::Parser;
+use std::path::PathBuf;
+use crate::shared::args::GeneralArgs;
 
 #[derive(Parser, Debug, Default)]
 //#[clap(override_usage("iceity --progress [OPTIONS]"))]
 pub struct InfoArgs {
 
-  /// Set the dialog text
-  text: Option<String>,
+  #[clap(flatten)]
+  pub general_args: GeneralArgs,
 
-  /// Set the dialog icon
-  icon_name: Option<PathBuf>,
+  /// Set the dialog text
+  #[clap(long)]
+  pub text: Option<String>,
+
+  /// Set the dialog icon. 
+  #[clap(long)]
+  pub icon_name: Option<String>,
+
+  /// Set the dialog icon. 
+  #[clap(long)]
+  pub icon_path: Option<PathBuf>,
 
   /// Do not enable text wrapping
-  no_wrap: bool,
+  #[clap(long)]
+  pub no_wrap: bool,
 
   /// Do not enable Pango markup
-  no_markup: bool,
+  #[clap(long)]
+  pub no_markup: bool,
 
   /// Enable ellipsizing in the dialog text. This fixes the high window size with long texts
-  ellipsize: bool
+  #[clap(long)]
+  pub ellipsize: bool
 }

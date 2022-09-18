@@ -1,6 +1,8 @@
 use iceity::args::{Args, ChosenWindow};
 use iceity::progress::application::ProgressDialog;
 use iceity::progress::args::ProgressArgs;
+use iceity::info::args::InfoArgs;
+use iceity::info::application::InfoDialog;
 
 //extern crate log;
 
@@ -56,12 +58,18 @@ fn main() -> iced::Result {
     //panic!();
 
     match_help_and_exit!(args, help_progress, ProgressArgs);
+    match_help_and_exit!(args, help_info,     InfoArgs);
 
     match args.chosen_window {
         ChosenWindow::Progress(progress_args) => {
             let mut settings = Settings::with_flags(progress_args);
             adjust_settings_by_general_args!(settings);
             ProgressDialog::run(Settings::from(settings))
+        },
+        ChosenWindow::Info(progress_args) => {
+            let mut settings = Settings::with_flags(progress_args);
+            adjust_settings_by_general_args!(settings);
+            InfoDialog::run(Settings::from(settings))
         },
         _ => panic!()
     }

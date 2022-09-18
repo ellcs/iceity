@@ -1,5 +1,6 @@
 use clap::Parser;
 use crate::progress::args::ProgressArgs;
+use crate::info::args::InfoArgs;
 use crate::entry::EntryArgs;
 
 #[derive(Parser, Debug)]
@@ -57,7 +58,7 @@ pub enum ChosenWindow {
     Error,
 
     #[clap(name = "--info")]
-    Info,
+    Info(InfoArgs),
 
     #[clap(name = "--file-selection")]
     FileSelection,
