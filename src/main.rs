@@ -3,8 +3,7 @@ use iceity::progress::application::ProgressDialog;
 use iceity::progress::args::ProgressArgs;
 use iceity::info::args::InfoArgs;
 use iceity::info::application::InfoDialog;
-
-//extern crate log;
+use iceity::entry::application::EntryDialog;
 
 use std::process;
 
@@ -21,6 +20,8 @@ macro_rules! match_help_and_exit {
     }
 }
 
+/// The settings for iced applications have to be set. We the the source
+/// from the parsed arguments, which are provided as a flag. 
 macro_rules! adjust_settings_by_general_args {
     ($settings:expr) => {
         if let Some(width) = $settings.flags.general_args.width {
@@ -51,11 +52,6 @@ fn test_settings_by_general_args_sets_width_and_height() {
 fn main() -> iced::Result {
     env_logger::init();
     let args = Args::parse();
-    //let c = Args::command();
-    //let m = c.get_matches();
-    //let p = m.indices_of("--progress");
-    //debug!("{:?}", m.indices_of("option").unwrap().collect::<Vec<_>>());
-    //panic!();
 
     match_help_and_exit!(args, help_progress, ProgressArgs);
     match_help_and_exit!(args, help_info,     InfoArgs);
@@ -71,6 +67,22 @@ fn main() -> iced::Result {
             adjust_settings_by_general_args!(settings);
             InfoDialog::run(Settings::from(settings))
         },
-        _ => panic!()
+        ChosenWindow::Entry(entry_args) => { 
+            let mut settings = Settings::with_flags(entry_args);
+            adjust_settings_by_general_args!(settings);
+            EntryDialog::run(Settings::from(settings))
+        },
+        ChosenWindow::Calendar => { panic!() },
+        ChosenWindow::Error => { panic!() },
+        ChosenWindow::FileSelection => { panic!() },
+        ChosenWindow::List => { panic!() },
+        ChosenWindow::Notification => { panic!() },
+        ChosenWindow::Question => { panic!() },
+        ChosenWindow::Warning => { panic!() },
+        ChosenWindow::Scale => { panic!() },
+        ChosenWindow::TextInfo => { panic!() },
+        ChosenWindow::ColorSelection => { panic!() },
+        ChosenWindow::Password => { panic!() },
+        ChosenWindow::Forms => { panic!() },
     }
 }

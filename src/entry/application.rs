@@ -1,48 +1,53 @@
 use tokio::io::{BufReader, AsyncBufReadExt};
 use tokio::time;
 
-use super::args::InfoArgs;
-use super::messages::InfoMessage;
+use super::args::EntryArgs;
+use super::messages::EntryMessage;
 
 
 use iced::{Row, Column, Element, ProgressBar, Text, Button, button};
 use iced::{executor, alignment, Length, Command, Application};
 
 
-pub struct InfoDialog {
-    pub args: InfoArgs,
+pub struct EntryDialog {
+    pub args: EntryArgs,
 
     pub ok: button::State,
+    pub abort: button::State
 }
 
-impl Application for InfoDialog {
+impl Application for EntryDialog {
     type Executor = executor::Default;
-    type Message = InfoMessage;
-    type Flags = InfoArgs;
+    type Message = EntryMessage;
+    type Flags = EntryArgs;
 
-    fn new(flags: Self::Flags) -> (Self, Command<InfoMessage>) {
+    fn new(flags: Self::Flags) -> (Self, Command<EntryMessage>) {
         (Self {
             args: flags,
 
             ok: Default::default(),
+            abort: Default::default(),
         }, Command::none())
     }
 
     fn title(&self) -> String {
-        let default = String::from("Information");
+        let default = String::from("Entry");
         self.args.general_args.title.as_ref().unwrap_or(&default).to_string()
     }
 
-    fn update(&mut self, message: InfoMessage) -> Command<InfoMessage> {
+    fn update(&mut self, message: EntryMessage) -> Command<EntryMessage> {
         match message {
-            InfoMessage::Ok => {
+            EntryMessage::Ok => {
                 std::process::exit(0);
+            },
+            EntryMessage::Abort => {
+                std::process::exit(1);
             }
         }
         Command::none()
     }
 
-    fn view(&mut self) -> Element<InfoMessage> {
+    fn view(&mut self) -> Element<EntryMessage> {
         let default = &String::from("");
         let view = Column::new()
             .padding(20)
@@ -54,9 +59,10 @@ impl Application for InfoDialog {
                 let ok_text = Text::new("Ok");
                 Button::new(&mut self.ok, ok_text)
                     .width(Length::FillPortion(1))
-                    .on_press(InfoMessage::Ok)
+                    .on_press(EntryMessage::Ok)
             });
         view.into()
     }
 
 }
+

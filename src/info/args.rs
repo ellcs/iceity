@@ -5,7 +5,6 @@ use crate::shared::args::GeneralArgs;
 #[derive(Parser, Debug, Default)]
 //#[clap(override_usage("iceity --progress [OPTIONS]"))]
 pub struct InfoArgs {
-
   #[clap(flatten)]
   pub general_args: GeneralArgs,
 

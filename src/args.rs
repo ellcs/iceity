@@ -1,7 +1,7 @@
 use clap::Parser;
 use crate::progress::args::ProgressArgs;
 use crate::info::args::InfoArgs;
-use crate::entry::EntryArgs;
+use crate::entry::args::EntryArgs;
 
 #[derive(Parser, Debug)]
 pub struct Helps {
